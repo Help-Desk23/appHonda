@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { View, TextInput, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, TextInput, Text, Image, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import Uri from '../assets/img/fondo.jpg';
 import Icon from '../assets/img/vian.png';
@@ -9,8 +8,42 @@ import Honda from '../assets/img/honda.png';
 import { BlurView } from 'expo-blur';
 import { useFonts } from "expo-font";
 import { Loading } from '../components/loading';
+import axios from 'axios';
 
 export function LoginScreen () {
+
+  const Router = useRouter();
+
+  const [ usuario, setUsuario] = useState('');
+  const [contraseña, setContraseña] = useState('');
+  const [infoAsesores, setInfoAsesores] = useState('');
+
+  const url = 'http:192.168.2.30:4000/login';
+
+  const handleSignIn = () => {
+    axios
+    .post(url, {
+      usuario,
+      contraseña
+    })
+    .then(response => {
+      if(response.data){
+        const { nombre, id_asesores, id_sucursal } = response.data.asesor;
+        setInfoAsesores(nombre)
+        Router.push({
+          pathname: '/home',
+          params: {nombre, id_asesores, id_sucursal}
+        });
+        Alert.alert(`Bienvenido ${response.data.asesor.nombre}`);
+      } else{
+        Alert.alert('Credencial Incorrecta')
+      }
+      console.log(response.data)
+    })
+    .catch(error => {
+      Alert.alert('Usuario o Contraseña Incorrecta')
+    })
+  }
 
   const [fontsLoaded] = useFonts({
     'Helvetica-Bold': require('../assets/fonts/Helvetica-Bold.ttf'),
@@ -19,7 +52,7 @@ export function LoginScreen () {
   });
 
   if(!fontsLoaded){
-    return <Loading/>
+    return <Loading />
   };
 
   return(
@@ -32,13 +65,13 @@ export function LoginScreen () {
             <Image source={Icon} style = {styles.icon}/>
             <View>
               <Text style={{ fontSize: 17, fontWeight: '400', color: 'black', fontFamily: 'Helvetica-Bold'}}> Usuario </Text>
-              <TextInput style={styles.input} placeholder='Usuario' placeholderTextColor='grey'/>
+              <TextInput onChangeText={ text => setUsuario(text)} style={styles.input} placeholder='Usuario' placeholderTextColor='grey'/>
           </View>
           <View>
             <Text style={{ fontSize: 17, fontWeight: '400', color: 'black', fontFamily: 'Helvetica-Bold'}}> Contraseña </Text>
-            <TextInput style={styles.input} placeholder='Contraseña' secureTextEntry={true} placeholderTextColor='grey'/>
+            <TextInput onChangeText={text => setContraseña(text)} style={styles.input} placeholder='Contraseña' secureTextEntry={true} placeholderTextColor='grey'/>
           </View>
-          <Pressable style={styles.button}>
+          <Pressable style={styles.button} onPress={handleSignIn}>
             <Text style={{ fontSize: 17, fontWeight: '400', color: 'white', fontFamily: 'Helvetica'}}> Login </Text> 
           </Pressable>
           </View>

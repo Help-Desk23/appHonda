@@ -1,6 +1,6 @@
-import HomeScreen from "../router/home";
+import {HomeScreen} from "../router/home";
 
-export default function Index() {
+export default function Home() {
     return (
         <HomeScreen />
     );
