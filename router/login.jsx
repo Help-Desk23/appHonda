@@ -18,7 +18,7 @@ export function LoginScreen () {
   const [contraseña, setContraseña] = useState('');
   const [infoAsesores, setInfoAsesores] = useState('');
 
-  const url = 'http:192.168.2.30:4000/login';
+  const url = 'http:192.168.2.46:4000/login';
 
   const handleSignIn = () => {
     axios
@@ -28,13 +28,13 @@ export function LoginScreen () {
     })
     .then(response => {
       if(response.data){
-        const { nombre, id_asesores, id_sucursal } = response.data.asesor;
-        setInfoAsesores(nombre)
+        const { asesor, id_asesores, id_sucursal } = response.data.asesor;
+        setInfoAsesores(asesor)
         Router.push({
           pathname: '/home',
-          params: {nombre, id_asesores, id_sucursal}
+          params: {asesor, id_asesores, id_sucursal}
         });
-        Alert.alert(`Bienvenido ${response.data.asesor.nombre}`);
+        Alert.alert(`Bienvenido ${response.data.asesor.asesor}`);
       } else{
         Alert.alert('Credencial Incorrecta')
       }
