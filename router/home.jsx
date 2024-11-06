@@ -10,6 +10,7 @@ import { Picker } from "@react-native-picker/picker";
 import {Proforma} from '../components/proforma';
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
 
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -160,9 +161,11 @@ const handlePress = async () => {
       <View style= {styles.container}>
           <View style= {styles.logo}>
             <Logo/>
-            <TouchableHighlight style={styles.iconContainer}>
-              <Image source={Cliente} style={styles.bcliente}/>
-            </TouchableHighlight>
+            <Link asChild href="/cliente">
+              <TouchableHighlight style={styles.iconContainer} underlayColor="transparent">
+                <Image source={Cliente} style={styles.bcliente}/>
+              </TouchableHighlight>
+            </Link>
           </View>
           <View style={styles.Title}>
             <Text style={{ fontFamily:'ZillaSlab-Bold', fontSize: 18, color: "grey", paddingTop: 20}}> PROFORMA </Text>
