@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View,TextInput, ScrollView, TouchableHighlight, Alert} from "react-native";
-import Cancelar from '../assets/img/cancelar.png';
+import { Image, StyleSheet, Text, View,TextInput, ScrollView, TouchableHighlight, Alert, ActivityIndicator} from "react-native";
+import Cancelar from '../assets/img/error.png';
 import { io } from "socket.io-client";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { useFonts } from "expo-font";
 
 export function Cliente () {
     const [data, setData] = useState([]);
@@ -51,12 +52,24 @@ export function Cliente () {
       }
     }
 
+    const [fontsLoaded] = useFonts({
+      'ZillaSlab-Bold': require('../assets/fonts/ZillaSlab-Bold.ttf'),
+    });
+
+    if (!fontsLoaded) {
+      return (
+        <View style={[styles.center, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+          <ActivityIndicator size="large" color="#FF0000" />
+        </View>
+      );
+    }
+
     return(
         <View style={{paddingTop: insets.top, paddingBottom: insets.bottom}}>
             <ScrollView>
                 <View style= {{ alignItems: "center", flex: 1}}>
                 <View style= {styles.containerProforma}>
-                    <Text style={styles.titleProforma }> BUSCAR PROFORMA </Text>
+                    <Text style={{ fontSize: 17, color: "white", fontFamily: "ZillaSlab-Bold"}}> BUSCAR CLIENTE </Text>
                 </View>
                 <View style={ styles.containerBuscar}>
                     <TextInput 
@@ -88,6 +101,7 @@ export function Cliente () {
                             \nIncial: ${item.inicialbs} Bs.
                             \nCuota Mensual: ${item.cuota_mes} $us.
                             \nPlazo: ${item.plazo} Meses
+                            \nAsesor: ${item.asesor}
                             \nFecha: ${formatFecha(item.fecha)}`)}
                             underlayColor="transparent"
                             style={styles.clienteInfo}>
@@ -111,27 +125,21 @@ export function Cliente () {
 
 const styles = StyleSheet.create({
     containerProforma: {
-      backgroundColor: "#cd2027",
-      height: 80,
+      backgroundColor: "#F00000",
+      height: 50,
       width: "100%",
       alignItems: "center",
       justifyContent: "center",
     },
-    titleProforma: {
-      fontSize: 15,
-      fontWeight: 'bold',
-      color: "white",
-      top: 20
-    },
     containerBuscar: {
       flexDirection: "row",
-      gap: 50,
+      gap: 20,
       marginTop: 10,
       justifyContent: "center"
     },
     iconSearch: {
-      height: 40,
-      width: 40
+      height: 30,
+      width: 30
     },
     input: {
       borderBottomWidth: 1,
