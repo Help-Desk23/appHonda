@@ -2,6 +2,7 @@
   "expo": {
     "name": "appHonda",
     "slug": "appHonda",
+    "newArchEnabled": true,
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/img/icon.png",

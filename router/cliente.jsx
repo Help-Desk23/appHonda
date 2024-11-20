@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View,TextInput, ScrollView, TouchableHighlight, Alert, ActivityIndicator} from "react-native";
-import Cancelar from '../assets/img/error.png';
+import Search from '../assets/img/search.png';
+import Flecha from '../assets/img/flecha.png';
 import { io } from "socket.io-client";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
+import { Link } from "expo-router";
 
 export function Cliente () {
     const [data, setData] = useState([]);
@@ -12,7 +14,7 @@ export function Cliente () {
     const [cliente, setCliente] = useState('');
     const insets = useSafeAreaInsets();
     
-  const socket = io("http://192.168.2.46:4000");
+  const socket = io("http://192.168.2.88:4000");
   
   useEffect(() =>{
     socket.on("connect", () => {
@@ -69,21 +71,24 @@ export function Cliente () {
             <ScrollView>
                 <View style= {{ alignItems: "center", flex: 1}}>
                 <View style= {styles.containerProforma}>
-                    <Text style={{ fontSize: 17, color: "white", fontFamily: "ZillaSlab-Bold"}}> BUSCAR CLIENTE </Text>
+                  <Link asChild href="/home">
+                    <TouchableHighlight underlayColor="transparent">
+                      <Image source={Flecha} style={{ width: 25, height: 25}}/>
+                    </TouchableHighlight>
+                  </Link>
+                  <Text style={{ fontSize: 19, color: "#F00000", fontFamily: "ZillaSlab-Bold"}}> BUSCAR CLIENTE </Text>
                 </View>
                 <View style={ styles.containerBuscar}>
-                    <TextInput 
-                    placeholder="NOMBRE DEL CLIENTE" 
+                  <Image source={Search} style= {{ width: 15, height: 15}}/>
+                  <TextInput 
+                    placeholder="Buscar..." 
                     style= {styles.input} 
                     value={cliente}
                     onChangeText={(text) => { 
                         setCliente(text); 
                         searchFilterFuction(text)
                         }}
-                    />
-                    <TouchableHighlight onPress={limpiarTexto} underlayColor="transparent">
-                        <Image source={Cancelar} style= {styles.iconSearch} />
-                    </TouchableHighlight>
+                  />
                 </View>
                 <View style= {styles.containerCliente}>
                     {filteredData.map ((item, index) => {
@@ -125,27 +130,30 @@ export function Cliente () {
 
 const styles = StyleSheet.create({
     containerProforma: {
-      backgroundColor: "#F00000",
-      height: 50,
-      width: "100%",
+      flexDirection: "row",
+      width: "90%",
       alignItems: "center",
-      justifyContent: "center",
+      justifyContent: "space-between",
+      paddingTop: 10,
+      paddingBottom: 16
     },
     containerBuscar: {
-      flexDirection: "row",
-      gap: 20,
-      marginTop: 10,
-      justifyContent: "center"
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderRadius: 20,
+      backgroundColor: "#bebebe",
+      paddingHorizontal: 15,
+      width: '95%',
+      gap: 5,
     },
     iconSearch: {
       height: 30,
-      width: 30
+      width: 30,
     },
     input: {
-      borderBottomWidth: 1,
-      width: "70%",
-      textAlign: "center",
-      borderBottomColor: '#ccc',
+      fontWeight: "400",
+      fontSize: 15,
+      width: '95%',
     },
     containerCliente: {
       gap: 20,
