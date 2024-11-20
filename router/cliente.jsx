@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View,TextInput, ScrollView, TouchableHighlight, Alert, ActivityIndicator} from "react-native";
 import Search from '../assets/img/search.png';
 import Flecha from '../assets/img/flecha.png';
+import X from '../assets/img/equis.png';
 import { io } from "socket.io-client";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -89,6 +90,11 @@ export function Cliente () {
                         searchFilterFuction(text)
                         }}
                   />
+                  {cliente.length > 0 && (
+                    <TouchableHighlight onPress={limpiarTexto} underlayColor="transparent">
+                      <Image source={X} style={{ width: 18, height: 18, left: 20}}/>
+                    </TouchableHighlight>
+                  )}
                 </View>
                 <View style= {styles.containerCliente}>
                     {filteredData.map ((item, index) => {
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       borderRadius: 20,
-      backgroundColor: "#bebebe",
+      backgroundColor: "#F5F5F5",
       paddingHorizontal: 15,
       width: '95%',
       gap: 5,
@@ -153,7 +159,7 @@ const styles = StyleSheet.create({
     input: {
       fontWeight: "400",
       fontSize: 15,
-      width: '95%',
+      width: '80%',
     },
     containerCliente: {
       gap: 20,
