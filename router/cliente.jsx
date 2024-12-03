@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View,TextInput, ScrollView, TouchableHighlight, Alert, ActivityIndicator} from "react-native";
+import { Image, StyleSheet, Text, View,TextInput, ScrollView, TouchableHighlight, Alert, ActivityIndicator, Keyboard} from "react-native";
 import Search from '../assets/img/search.png';
 import Flecha from '../assets/img/flecha.png';
 import X from '../assets/img/equis.png';
@@ -91,7 +91,11 @@ export function Cliente () {
                         }}
                   />
                   {cliente.length > 0 && (
-                    <TouchableHighlight onPress={limpiarTexto} underlayColor="transparent">
+                    <TouchableHighlight onPress={() => {
+                      Keyboard.dismiss(); 
+                      limpiarTexto();}} 
+                      underlayColor="transparent"
+                    >
                       <Image source={X} style={{ width: 18, height: 18, left: 20}}/>
                     </TouchableHighlight>
                   )}
@@ -139,7 +143,6 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       width: "90%",
       alignItems: "center",
-      justifyContent: "space-between",
       paddingTop: 10,
       paddingBottom: 16
     },
