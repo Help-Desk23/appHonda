@@ -35,7 +35,7 @@ export function HomeScreen() {
 
   // MOTOS
 
-  const socket = io("http://192.168.2.88:4000")
+  const socket = io("http://192.168.10.147:4000")
 
   useEffect(() =>{
     socket.on("connect", () => {
@@ -95,14 +95,14 @@ export function HomeScreen() {
 
 const handlePress = async () => {
   try {
-    const responseCliente = await axios.post("http://192.168.2.88:4000/clientes", {
+    const responseCliente = await axios.post("http://192.168.10.147:4000/clientes", {
       nombre: nombreCliente,
       telefono: telefonoCliente,
     });
 
     if (responseCliente.data && responseCliente.data.id_cliente) {
       const idCliente = responseCliente.data.id_cliente;
-      await axios.post("http://192.168.2.88:4000/proforma", {
+      await axios.post("http://192.168.10.147:4000/proforma", {
         id_cliente: idCliente,
         id_motos: selectedValue,
         id_asesores: id_asesores,

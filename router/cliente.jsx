@@ -15,7 +15,7 @@ export function Cliente () {
     const [cliente, setCliente] = useState('');
     const insets = useSafeAreaInsets();
     
-  const socket = io("http://192.168.2.88:4000");
+  const socket = io("http://192.168.10.147:4000");
   
   useEffect(() =>{
     socket.on("connect", () => {

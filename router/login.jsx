@@ -18,7 +18,7 @@ export function LoginScreen () {
   const [contraseña, setContraseña] = useState('');
   const [infoAsesores, setInfoAsesores] = useState('');
 
-  const url = 'http:192.168.2.88:4000/login';
+  const url = 'http://192.168.10.147:4000/login';
 
   const handleSignIn = () => {
     axios
