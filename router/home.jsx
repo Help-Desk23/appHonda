@@ -14,7 +14,7 @@ import { Link } from "expo-router";
 
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
-  const { asesor, id_asesores, id_sucursal } = useLocalSearchParams();
+  const { nombre, id_asesores, id_sucursal } = useLocalSearchParams();
 
   const [nombreCliente, setNombreCliente] = useState('');
   const [telefonoCliente, setTelefonoCliente] = useState('');
@@ -35,7 +35,7 @@ export function HomeScreen() {
 
   // MOTOS
 
-  const socket = io("http://192.168.2.242:4000")
+  const socket = io("http://192.168.2.52:4000")
 
   useEffect(() =>{
     socket.on("connect", () => {
@@ -95,14 +95,14 @@ export function HomeScreen() {
 
 const handlePress = async () => {
   try {
-    const responseCliente = await axios.post("http://192.168.2.242:4000/clientes", {
+    const responseCliente = await axios.post("http://192.168.2.52:4000/clientes", {
       nombre: nombreCliente,
       telefono: telefonoCliente,
     });
 
     if (responseCliente.data && responseCliente.data.id_cliente) {
       const idCliente = responseCliente.data.id_cliente;
-      await axios.post("http://192.168.2.242:4000/proforma", {
+      await axios.post("http://192.168.2.52:4000/proforma", {
         id_cliente: idCliente,
         id_motos: selectedValue,
         id_asesores: id_asesores,
@@ -253,7 +253,7 @@ const handlePress = async () => {
                 inicialDolares={inicialDolares}
                 inicialBolivianos={inicialBolivianos}
                 cuotaMes={calcularCuotaMensual()}
-                asesor={asesor}
+                asesor={nombre}
                 id_asesores={id_asesores}
                 id_sucursal={id_sucursal}
                 imagen={imagen}

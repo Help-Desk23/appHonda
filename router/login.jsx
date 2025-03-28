@@ -18,7 +18,7 @@ export function LoginScreen () {
   const [contraseña, setContraseña] = useState('');
   const [infoAsesores, setInfoAsesores] = useState('');
 
-  const url = 'http:192.168.2.242:4000/login';
+  const url = 'http:192.168.2.52:4000/login';
 
   const handleSignIn = () => {
     axios
@@ -28,20 +28,35 @@ export function LoginScreen () {
     })
     .then(response => {
       if(response.data){
-        const { asesor, id_asesores, id_sucursal } = response.data.asesor;
-        setInfoAsesores(asesor)
+        const { nombre, id_asesores, id_sucursal } = response.data.asesor;
+        setInfoAsesores(nombre)
         Router.push({
           pathname: '/home',
-          params: {asesor, id_asesores, id_sucursal}
+          params: {nombre, id_asesores, id_sucursal}
         });
-        Alert.alert(`Bienvenido ${response.data.asesor.asesor}`);
+        Alert.alert(`Bienvenido ${response.data.asesor.nombre}`);
       } else{
         Alert.alert('Credencial Incorrecta')
       }
       console.log(response.data)
     })
     .catch(error => {
-      Alert.alert('Usuario o Contraseña Incorrecta')
+      if (error.response){
+        console.error("Error de respuesta en el Servidor:", error.response.status, error.response.data);
+        if(error.response.status === 401){
+          Alert.alert("Error de Autenticación", "Usuario o Contraseña Incorrecta");
+        } else if(error.response.status === 500){
+          Alert.alert("Error de Servidor", "Hubo un problema en el servidor, intente más tarde");
+        } else{
+          Alert.alert("Error", "Ocurrio un error inesperado");
+        }
+      } else if (error.request){
+        console.error("Error de solicitud:", error.request);
+        Alert.alert("Error de conexión", "No se pudo conectar con el servidor");
+      } else{
+        console.error("Error de configuración:", error.message);
+        Alert.alert("Error", "Ocurrio un error al configurar la solicitud");
+      }
     })
   }
 
