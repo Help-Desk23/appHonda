@@ -1,16 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { View, TextInput, Text, Image, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter} from 'expo-router';
 import Uri from '../assets/img/fondo.jpg';
 import Icon from '../assets/img/vian.png';
 import Honda from '../assets/img/honda.png';
 import { BlurView } from 'expo-blur';
 import { useFonts } from "expo-font";
 import { Loading } from '../components/loading';
+import { useNavigation } from '@react-navigation/native';
+import { storeData } from '../utilities/sesions'; // Asegúrate de que la ruta sea correcta
 import axios from 'axios';
 
 export function LoginScreen () {
+
+  const navigation = useNavigation();
 
   const Router = useRouter();
 
@@ -18,30 +22,61 @@ export function LoginScreen () {
   const [contraseña, setContraseña] = useState('');
   const [infoAsesores, setInfoAsesores] = useState('');
 
-  const url = 'http://192.168.10.147:4000/login';
+  const url = 'http://192.168.2.62:4000/login';
 
-  const handleSignIn = () => {
+
+  const handleSignIn = async() => {
     axios
     .post(url, {
       usuario,
       contraseña
     })
-    .then(response => {
+    .then(async response => {
       if(response.data){
+        //enviar al local storage los datos de sesion
         const { asesor, id_asesores, id_sucursal } = response.data.asesor;
-        setInfoAsesores(asesor)
+        
+        // Guarda SOLO lo necesario
+        await storeData({ 
+          asesor, 
+          id_asesores, 
+          id_sucursal 
+        });
+        //console.log("Datos guardados:", { asesor, id_asesores, id_sucursal });
+
+        // Actualiza el estado de tu aplicación
+        setInfoAsesores(asesor);
         Router.push({
           pathname: '/home',
           params: {asesor, id_asesores, id_sucursal}
         });
         Alert.alert(`Bienvenido ${response.data.asesor.asesor}`);
+
       } else{
-        Alert.alert('Credencial Incorrecta')
+        Alert.alert('Credencial Incorrecta');
       }
-      console.log(response.data)
+      //console.log(response.data);
     })
     .catch(error => {
-      Alert.alert('Usuario o Contraseña Incorrecta')
+      if (error.response) {
+        // El servidor respondió con un código de estado fuera del rango 2xx
+        console.error("Error de respuesta del servidor:", error.response.status, error.response.data);
+        if (error.response.status === 401) {
+          Alert.alert("Error de autenticación", "Usuario o contraseña incorrectos.");
+        } else if (error.response.status === 500) {
+          Alert.alert("Error del servidor", "Hubo un problema en el servidor. Inténtalo de nuevo más tarde.");
+        } else {
+          Alert.alert("Error", "Ocurrió un error inesperado.");
+        }
+      } else if (error.request) {
+        // La solicitud fue hecha, pero no se recibió respuesta
+        console.error("Error de solicitud:", error.request);
+        Alert.alert("Error de conexión", "No se pudo conectar al servidor.");
+      } else {
+        // Algo sucedió en la configuración de la solicitud que desencadenó un error
+        console.error("Error de configuración:", error.message);
+        Alert.alert("Error", "Ocurrió un error al configurar la solicitud.");
+      }
     })
   }
 
