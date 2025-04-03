@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.auxsistem.appHonda"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -28,6 +29,14 @@
     "plugins": [
       "expo-router",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "95c566d5-a80f-46df-a6df-2f2a59a4b284"
+      }
+    }
   }
 }
