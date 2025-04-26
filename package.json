@@ -26,13 +26,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-view-shot": "~4.0.3",
-<<<<<<< HEAD
     "socket.io-client": "^4.8.0"
-=======
-    "socket.io-client": "^4.8.0",
-    "undefined": "\\",
-    "expo-dev-client": "~5.0.19"
->>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
