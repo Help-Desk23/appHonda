@@ -31,10 +31,20 @@
       "expo-font"
     ],
     "extra": {
+<<<<<<< HEAD
       "eas": {
         "projectId": "95c566d5-a80f-46df-a6df-2f2a59a4b284"
       }
     },
     "owner": "auxsistem"
+=======
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "95c566d5-a80f-46df-a6df-2f2a59a4b284"
+      }
+    }
+>>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
   }
 }

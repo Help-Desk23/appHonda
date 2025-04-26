@@ -1,13 +1,25 @@
+<<<<<<< HEAD
 import { Text, View, StyleSheet, Image, TouchableHighlight, Alert, ActivityIndicator } from "react-native";
+=======
+import { Text, View, StyleSheet, Image, TouchableHighlight, SafeAreaView, Share, Alert, navigation } from "react-native";
+>>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
 import { StatusBar } from "expo-status-bar";
 import ViewShot from "react-native-view-shot";
 import { TouchableOpacity } from 'react-native';
 import * as MediaLibrary from "expo-media-library";
 import { useNavigation } from '@react-navigation/native';
+<<<<<<< HEAD
 import { useRef, useState, useEffect } from "react";
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import Constants from 'expo-constants';
+=======
+import * as Sharing from 'expo-sharing';
+import { useRef, useState, useEffect } from "react";
+import Flecha from '../assets/img/flecha.png';
+import Constants from 'expo-constants';
+
+>>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
 
 // Imagenes
 import FondoProforma from '../assets/img/fondo/fondo.png';
@@ -17,6 +29,7 @@ import Flecha from '../assets/img/flecha.png';
 
 export function Proforma({ nombre, modelo, plazo, precioDolares, precioBolivianos, inicialDolares, inicialBolivianos, cuotaMes, asesor, imagen, tipoCambio }) {
 
+<<<<<<< HEAD
   const viewShotRef = useRef();
   const [mediaLibraryPermission, requestMediaLibraryPermission] = MediaLibrary.usePermissions();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -208,6 +221,172 @@ export function Proforma({ nombre, modelo, plazo, precioDolares, precioBoliviano
       <StatusBar barStyles="light-content" backgroundColor="#202020" />
     </View>
   )
+=======
+  //pedir permiso para guardar la imagen en la galeria
+  const viewShotRef = useRef();
+  const [mediaLibraryPermission, requestMediaLibraryPermission] = MediaLibrary.usePermissions();
+
+  useEffect(() => {
+    const requestMediaPermission = async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permiso necesario',
+          'La app necesita acceso a tu galería para guardar imágenes.',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Abrir configuración', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    };
+    requestMediaPermission();
+  }, []);
+
+
+  const financiadoDolar = precioDolares - inicialDolares;
+
+  const cuotaBs = cuotaMes * tipoCambio;
+
+  const decimalCuotaMes = cuotaBs.toFixed(2);
+
+  // boton de volver atras
+  const navigation = useNavigation();
+
+
+// Descargar
+const captureAndSave = async () => {
+  try {
+    // Si estamos en Expo Go, no podemos pedir permisos reales
+    if (Constants.appOwnership === 'expo') {
+      Alert.alert(
+        'No disponible en Expo Go',
+        'Para guardar imágenes, debes crear un build de desarrollo (expo run:android).',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    // Si no es Expo Go, pedir permisos normalmente
+    const { granted } = await MediaLibrary.getPermissionsAsync();
+    if (!granted) {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Se necesitan permisos para guardar la imagen');
+        return;
+      }
+    }
+
+    // Guardar la imagen
+    const uri = await viewShotRef.current.capture();
+    await MediaLibrary.createAssetAsync(uri);
+    Alert.alert('¡Imagen guardada!');
+
+    // Capturar el ViewShot
+    const uri2 = await viewShotRef.current.capture();
+
+    const asset = await MediaLibrary.createAssetAsync(uri2);
+
+    Alert.alert(
+      '¡Guardado exitoso!',
+      'La imagen se guardó en tu galería',
+      [{ text: 'OK' }]
+    );
+
+  } catch (error) {
+    Alert.alert(
+      'Error',
+      error.message.includes('permission')
+        ? 'Permiso insuficiente. Selecciona "Permitir todo" en configuración.'
+        : 'Error al guardar: ' + error.message
+    );
+  }
+};
+
+// Compartir
+const shareImage = async () => {
+  try {
+    const uri = await viewShotRef.current.capture();
+
+    // Comparte directamente desde la URI temporal
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(uri, {
+        dialogTitle: 'Compartir Proforma',
+      });
+    }
+  } catch (error) {
+    console.error('Error al compartir:', error);
+  }
+};
+
+return (
+  <View style={styles.container}>
+    <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.viewShotRef}>
+      <Image source={FondoProforma} style={[styles.image, StyleSheet.absoluteFill]} />
+      <Image source={{ uri: imagen }} style={styles.imageMoto} resizeMode="contain" />
+      <Text style={styles.modelo}>{modelo}</Text>
+      <View style={styles.nombreCliente}>
+        <Text style={styles.tituloCliente}>Cliente:</Text>
+        <Text style={styles.cliente}> {nombre} </Text>
+      </View>
+
+      <View style={styles.precioMoto}>
+        <Text style={styles.tituloMoto}> Precio Contado: </Text>
+        <View style={styles.precioContainer}>
+          <Text style={styles.costoMoto}> $us. {precioDolares} </Text>
+          <Text style={styles.costoMoto}> Bs. {precioBolivianos} </Text>
+        </View>
+      </View>
+
+      <View style={styles.linea}></View>
+
+      <View style={styles.containerTitulos}>
+        <View style={styles.gapStyles}>
+          <Text style={styles.titulo}> Cuota Inicial: </Text>
+
+          <Text style={styles.titulo}> Cuota Mensual: </Text>
+
+          <Text style={styles.titulo}> Plazo: </Text>
+
+          <Text style={styles.titulo}> Asesor: </Text>
+        </View>
+        <View style={styles.cuotaContainer}>
+          <View style={styles.direction}>
+            <Text style={styles.textStyle}> $us. {inicialDolares}</Text>
+            <Text style={styles.textStyle}> Bs. {inicialBolivianos}</Text>
+          </View>
+
+          <View style={styles.direction}>
+            <Text style={styles.textStyle}> $us. {cuotaMes}</Text>
+            <Text style={styles.textStyle}> Bs. {decimalCuotaMes}</Text>
+          </View>
+
+          <Text style={styles.textStyle}> {plazo} Meses </Text>
+          <Text style={styles.textStyle}> {asesor}</Text>
+        </View>
+      </View>
+    </ViewShot>
+    {/* Boton de volver atras */}
+
+
+    <View style={styles.iconFooter}>
+      <TouchableOpacity onPress={() => navigation.replace("home")}>
+        <Image source={Flecha} style={{ marginLeft: 20, width: 35, height: 35 }} />
+      </TouchableOpacity>
+
+      <TouchableHighlight onPress={shareImage}>
+        <Image source={Compartir} style={styles.enviar} />
+      </TouchableHighlight>
+
+
+      <TouchableHighlight onPress={captureAndSave}>
+        <Image source={Descargar} style={styles.enviar} />
+      </TouchableHighlight>
+    </View>
+    <StatusBar barStyles="light-content" backgroundColor="#202020" />
+  </View>
+)
+>>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
 }
 
 const styles = StyleSheet.create({
@@ -222,8 +401,12 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
+<<<<<<< HEAD
     height: "50%",
 
+=======
+    height: "52%",
+>>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
   },
   imageMoto: {
     marginBottom: 50,
@@ -306,6 +489,7 @@ const styles = StyleSheet.create({
   enviar: {
     height: 40,
     width: 40
+<<<<<<< HEAD
   },
   loadingOverlay: {
     position: 'absolute',
@@ -348,3 +532,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
 });
+=======
+  }
+});
+>>>>>>> 8c0921bf3a69ebe41ec7748899fafeb022dae589
