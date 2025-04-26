@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "appHonda",
+    "name": "VIAN SRL",
     "slug": "appHonda",
     "newArchEnabled": true,
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/img/icon.png",
+    "icon": "./assets/img/vian.png",
     "userInterfaceStyle": "light",
     "scheme": "metacritic",
     "splash": {
-      "image": "./assets/img/splash.png",
+      "image": "./assets/img/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,16 +18,23 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/img/adaptive-icon.png",
+        "foregroundImage": "./assets/img/vian.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.auxsistem.appHonda"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "expo-router",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "95c566d5-a80f-46df-a6df-2f2a59a4b284"
+      }
+    },
+    "owner": "auxsistem"
   }
 }
