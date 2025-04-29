@@ -66,7 +66,7 @@ export default function HomeScreen() {
   //console.log("Datos de sesión:", userData);
   //------------------------------------------
   // MOTOS
-  const socket = io("https://apihonda.onrender.com")
+  const socket = io("http://177.222.114.122:3306")
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -164,7 +164,7 @@ export default function HomeScreen() {
       if (!validarIncial()) {
         return; // Si la validación falla, no continuar
       }
-      const responseCliente = await axios.post("https://apihonda.onrender.com/clientes", {
+      const responseCliente = await axios.post("http://177.222.114.122:3306/clientes", {
         nombre: nombreCliente,
         telefono: telefonoCliente,
       });
@@ -177,7 +177,7 @@ export default function HomeScreen() {
         //console.log(` id_asesor: ${userData.id_asesores}\n asesor: ${userData.asesor}\n Sucursal: ${userData.id_sucursal}\n Nombre: ${nombreCliente}\nTelefono: ${telefonoCliente}\nModelo: ${modeloSeleccionado}\nPlazo: ${plazo} meses\nPrecio $US: ${precioDolares}\nPrecio Bs: ${precioBolivianos}\nInicial $US: ${inicialDolares}\nInicial Bs: ${inicialBolivianos}\nCuota Mensual: ${calcularCuotaMensual()}`);
         //validar plazo
         if (validarIncial()) {
-          await axios.post("https://apihonda.onrender.com/proforma", {
+          await axios.post("http://177.222.114.122:3306/proforma", {
             id_cliente: idCliente,
             id_motos: selectedValue,
             id_asesores: userData.id_asesores,

@@ -21,7 +21,7 @@ export default function Cliente() {
   const [alertVisible, setAlertVisible] = useState(false);
   const router = useRouter();
 
-  const socket = io("https://apihonda.onrender.com");
+  const socket = io("http://177.222.114.122:3306");
 
   useEffect(() => {
     const cargarDatosAsesor = async () => {
