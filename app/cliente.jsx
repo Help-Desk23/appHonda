@@ -21,7 +21,7 @@ export default function Cliente() {
   const [alertVisible, setAlertVisible] = useState(false);
   const router = useRouter();
 
-  const socket = io("http://177.222.114.122:3306");
+  const socket = io("http://177.222.114.122:3000");
 
   useEffect(() => {
     const cargarDatosAsesor = async () => {

@@ -32,7 +32,7 @@ export default function LoginScreen() {
   //loading
   const [isLoading, setIsLoading] = useState(false);
 
-  const url = 'http://177.222.114.122:3306/asesores/login';
+  const url = 'http://177.222.114.122:3000/asesores/login';
 
 
   useEffect(() => {

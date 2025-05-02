@@ -17,11 +17,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.auxsistem.appHonda",
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/vian.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.auxsistem.appHonda"
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -38,3 +39,4 @@
     "owner": "auxsistem"
   }
 }
+
