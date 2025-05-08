@@ -66,7 +66,7 @@ export default function HomeScreen() {
   //console.log("Datos de sesión:", userData);
   //------------------------------------------
   // MOTOS
-  const socket = io("http://177.222.114.122:3000")
+  const socket = io("http://177.222.114.122:3000/api-honda")
 
   useEffect(() => {
     socket.on("connect", () => {
