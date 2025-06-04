@@ -36,10 +36,12 @@ export default function HomeScreen() {
   const [inicialDolares, setInicialDolares] = useState('');
   const [inicialBolivianos, setInicialBolivianos] = useState('');
   const [imagen, setImagen] = useState('');
-  const [costoVarios, setCostoVarios] = useState([{  interes_anual: 0, tipo_cambio: 0, formulario: 0, descuento_inicial:0 }]);
+  const [costoVarios, setCostoVarios] = useState([{ interes_anual: 0, tipo_cambio: 0, formulario: 0, descuento_inicial: 0 }]);
   const [showAlert, setShowAlert] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modeloSeleccionado, setModeloSeleccionado] = useState('');
+
+
   const router = useRouter(); // Añade esto junto a tus otros hooks
 
 
@@ -66,7 +68,7 @@ export default function HomeScreen() {
   //console.log("Datos de sesión:", userData);
   //------------------------------------------
   // MOTOS
-  const socket = io("http://177.222.114.122:3000/api-honda")
+  const socket = io("http://177.222.114.122:3000")
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -86,27 +88,38 @@ export default function HomeScreen() {
       socket.disconnect();
     };
   }, []);
+  // Efecto que se ejecuta cada vez que precioBolivianos cambia
+  useEffect(() => {
+    if (precioBolivianos && !isNaN(parseFloat(precioBolivianos))) {
+      const nuevoInicialBs = (parseFloat(precioBolivianos) * 0.20).toFixed(2);
+      setInicialBolivianos(nuevoInicialBs);
+
+      const nuevoInicialDolares = (parseFloat(nuevoInicialBs) / costoVarios[0].tipo_cambio).toFixed(2);
+      setInicialDolares(nuevoInicialDolares);
+    } else {
+      setInicialBolivianos('');
+      setInicialDolares('');
+    }
+  }, [precioBolivianos, costoVarios]);
 
   const handleModeloChange = (value) => {
     setSelectedValue(value);
-
-    const motoSeleccionada = data.find(moto =>
-      moto.id_motos.toString() === value.toString()); // <- Corrección aquí
+    const motoSeleccionada = data.find(moto => moto.id_motos.toString() === value.toString());
 
     if (motoSeleccionada) {
-
       setImagen(motoSeleccionada.img_motos);
       setPrecioDolares(motoSeleccionada.precious);
       setPrecioBolivianos((motoSeleccionada.precious * costoVarios[0].tipo_cambio).toFixed(2));
       setModeloSeleccionado(motoSeleccionada.modelo);
     } else {
-      // Resetear valores
       setImagen('');
       setPrecioDolares('');
       setPrecioBolivianos('');
       setModeloSeleccionado('');
     }
   };
+
+
 
   // ESTILO DEL INPUT AL SELECCIONAR
   const [isFocusedInput1, setIsFocusedInput1] = useState(false);
@@ -115,6 +128,8 @@ export default function HomeScreen() {
   const [isFocusedInput4, setIsFocusedInput4] = useState(false);
   const [isFocusedInput5, setIsFocusedInput5] = useState(false);
 
+  const [isFocusedInput6, setIsFocusedInput6] = useState(false);
+
   //loading al presionar procesar
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -122,20 +137,19 @@ export default function HomeScreen() {
   //
   const handleInicialDolaresChange = (text) => {
     setInicialDolares(text);
-
-    if (!isNaN(parseFloat(text))) {
-
-      const inicialBs = parseFloat(text) * costoVarios[0].tipo_cambio;
-      setInicialBolivianos(inicialBs.toFixed(2));
+    // Solo actualiza Bs si el usuario está editando
+    if (!isNaN(parseFloat(text)) && text !== '') {
+      const inicialBs = (parseFloat(text) * costoVarios[0].tipo_cambio).toFixed(2);
+      setInicialBolivianos(inicialBs);
     }
   };
 
   const handleInicialBolivianosChange = (text) => {
     setInicialBolivianos(text);
-
-    if (!isNaN(parseFloat(text))) {
-      const inicialDolares = parseFloat(text) / costoVarios[0].tipo_cambio;
-      setInicialDolares(inicialDolares.toFixed(2));
+    // Solo actualiza $US si el usuario está editando
+    if (!isNaN(parseFloat(text)) && text !== '') {
+      const inicialDolares = (parseFloat(text) / costoVarios[0].tipo_cambio).toFixed(2);
+      setInicialDolares(inicialDolares);
     }
   };
 
@@ -229,8 +243,8 @@ export default function HomeScreen() {
     // Convertir a número (por si viene como string)
     const plazoNum = Number(plazo);
 
-    if (plazoNum < 1 || plazoNum > 18) {
-      Alert.alert("Error", "El plazo debe estar entre 1 y 18 meses");
+    if (plazoNum < 0) {
+      Alert.alert("Error", "El plazo no debe ser menor a 0");
       setPlazo('');
       return false;
     }
@@ -250,20 +264,24 @@ export default function HomeScreen() {
       setInicialBolivianos('');
       return false; // Indicate failure
     }
-    if (Number(inicialDolares) < (Number(precioDolares) * 0.20)) {
+    /*if (Number(inicialDolares) < (Number(precioDolares) * 0.20)) {
       //calcular el 14.57% del precio de la moto
       var porcentaje1457 = Number(precioDolares) * 0.20;
       Alert.alert("Aviso", `El monto inicial no puede ser menor al 20% del precio de la moto \n (${porcentaje1457.toFixed(2)} $US)`);
       setInicialDolares('');
       setInicialBolivianos('');
       return false; // Indicate failure
-    }
+    }*/
     return true; // Indicate success
   }
   //funcion para volver a la pagina de login sin usar navigate
   // CUOTA MENSUAL
 
   const calcularCuotaMensual = () => {
+
+    if (Number(plazo) === 0) {
+      return "0.00";
+    }
 
     const costoMoto = precioDolares
     const inicialBs = (inicialBolivianos - costoVarios[0].descuento_inicial) / costoVarios[0].tipo_cambio
@@ -388,7 +406,8 @@ export default function HomeScreen() {
             maxLength={2}
             value={plazo}
             ///estilo para el foco al seleccionar el input
-            onFocus={() => setIsFocusedInput1(true)}   // Activa al seleccionar
+            onFocus={() => setIsFocusedInput1(true)}
+            onBlur={() => setIsFocusedInput1(false)}
             // Desactiva al salir y llamamr a la funcion de validar
             onEndEditing={validarPlazo}
             onChangeText={(text) => {
@@ -406,10 +425,21 @@ export default function HomeScreen() {
         <View style={styles.precioContainer}>
           <TextInput
             placeholder="PRECIO $US"
-            style={styles.preciosus}
-            value={precioDolares.toString()} // Ensure value is a string
-            editable={false}
-            keyboardType="numeric" />
+            value={precioDolares.toString()}
+            style={[styles.preciosus, isFocusedInput6 ? styles.inputFocused : null]}
+            onFocus={() => setIsFocusedInput6(true)}
+            onBlur={() => setIsFocusedInput6(false)}
+            keyboardType="numeric"
+            onChangeText={(text) => {
+              setPrecioDolares(text);
+              if (!isNaN(parseFloat(text)) && text !== '') {
+                const precioBs = (parseFloat(text) * costoVarios[0].tipo_cambio).toFixed(2);
+                setPrecioBolivianos(precioBs);
+              } else {
+                setPrecioBolivianos('');
+              }
+            }}
+          />
           <TextInput
             placeholder="PRECIO Bs"
             style={styles.preciobs}
@@ -445,22 +475,22 @@ export default function HomeScreen() {
             onBlur={() => setIsFocusedInput3(false)}  // Desactiva al salir
             keyboardType="numeric" />
         </View>
-          <TouchableHighlight
-            style={[styles.button, isProcessing && { opacity: 0.7 }]}
-            onPress={handlePress}
-            disabled={isProcessing}
-          >
-            <Text style={styles.textButton}>PROCESAR</Text>
-          </TouchableHighlight>
+        <TouchableHighlight
+          style={[styles.button, isProcessing && { opacity: 0.7 }]}
+          onPress={handlePress}
+          disabled={isProcessing}
+        >
+          <Text style={styles.textButton}>PROCESAR</Text>
+        </TouchableHighlight>
 
-          {isProcessing && (
-            <View style={styles.processingOverlay}>
-              <View style={styles.processingContainer}>
-                <ActivityIndicator size="large" color="#FF0000" />
-                <Text style={styles.processingText}>PROCESANDO...</Text>
-              </View>
+        {isProcessing && (
+          <View style={styles.processingOverlay}>
+            <View style={styles.processingContainer}>
+              <ActivityIndicator size="large" color="#FF0000" />
+              <Text style={styles.processingText}>PROCESANDO...</Text>
             </View>
-          )}
+          </View>
+        )}
         <Modal
           animationType="slide"
           transparent={false}
@@ -600,6 +630,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 70,
     top: 20
+  },
+  preciosus: {
+    borderBottomWidth: 1,
+    width: 125,
+    textAlign: "center",
+    left: 35
   },
   inicialsus: {
     borderBottomWidth: 1,

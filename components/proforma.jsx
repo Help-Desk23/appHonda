@@ -75,13 +75,6 @@ const captureAndSave = async () => {
     // Guardar la imagen
     const uri = await viewShotRef.current.capture();
     await MediaLibrary.createAssetAsync(uri);
-    Alert.alert('¡Imagen guardada!');
-
-    // Capturar el ViewShot
-    const uri2 = await viewShotRef.current.capture();
-
-    const asset = await MediaLibrary.createAssetAsync(uri2);
-
     Alert.alert(
       '¡Guardado exitoso!',
       'La imagen se guardó en tu galería',
